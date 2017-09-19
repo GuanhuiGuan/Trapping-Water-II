@@ -1,0 +1,42 @@
+class Solution(object):
+    def trapRainWater(self, heightMap):
+        """
+        :type heightMap: List[List[int]]
+        :rtype: int
+        """
+        
+        from heapq import heappush, heappop #import heap
+        
+        if heightMap == []:
+            return 0;
+        
+        a, b = len(heightMap), len(heightMap[0]);    
+        flag = [[0 for _ in range(b)] for _ in range(a)];   #flag if it's been visited
+        offset = [(-1, 0), (1, 0), (0, -1), (0, 1)];        #direction set
+        #priority queue, finding the min; perimeter first
+        prique = [];
+        for i in range(a):
+            heappush(prique, (heightMap[i][0], i, 0)); #what goes into the priority queue: (height, x-cordinate, y-cordinate)
+            flag[i][0] = 1;
+            heappush(prique, (heightMap[i][b - 1], i, b - 1));
+            flag[i][b - 1] = 1;
+        for i in range(b):
+            heappush(prique, (heightMap[0][i], 0, i)); #what goes into the priority queue: (height, x-cordinate, y-cordinate)
+            flag[0][i] = 1;
+            heappush(prique, (heightMap[a - 1][i], a - 1, i));
+            flag[a - 1][i] = 1;
+            
+        #from the min perimeter
+        water = 0;
+        while prique:           #WHY???
+            h, x, y = heappop(prique);
+            for dx, dy in offset:
+                newx, newy = x + dx, y + dy;
+                if 0 <= newx < a and 0 <= newy < b and flag[newx][newy] == 0:
+                    flag[newx][newy] = 1;
+                    newh = max(h, heightMap[newx][newy]);         #WHY??
+                    heappush(prique, (newh, newx, newy));
+                    if h > heightMap[newx][newy]:
+                        water += h - heightMap[newx][newy];
+                    
+        return water;
