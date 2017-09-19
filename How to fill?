@@ -1,0 +1,27 @@
+class Solution:
+    """
+    @param: heights: a matrix of integers
+    @return: an integer
+    """
+    def trapRainWater(self, heights):
+        # write your code here
+        from heapq import heappush, heappop #import heap
+        
+        if heights == []:
+            return 0;
+        
+        a, b = len(heights), len(heights[0]);    
+        flag = [[0 for _ in range(a)] for _ in range(b)];   #flag if it's been visited
+        offset = [(-1, 0), (1, 0), (0, -1), (0, 1)];        #direction set
+        #priority queue, finding the min; perimeter first
+        prique = [];
+        for i in range(a):
+            heappush(prique, heights[i][0]);
+            flag[i][0] = 1;
+        for i in range(b):
+            heappush(prique, heights[i][-1]);
+            flag[i][0] = 1;
+            
+        #from the min perimeter
+        water = 0;
+        
